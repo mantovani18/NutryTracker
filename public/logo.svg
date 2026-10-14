@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" role="img" aria-labelledby="title desc">
+  <title id="title">NutriTrack</title>
+  <desc id="desc">Logotipo NutriTrack em roxo</desc>
+  <defs>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e34aff"/>
+      <stop offset=".48" stop-color="#8f2dff"/>
+      <stop offset="1" stop-color="#4214e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="768" height="768" rx="36" fill="#050507"/>
+  <path fill="url(#violet)" d="M252 211 297 166 475 325 527 273 455 246 527 211v79l-69 69-161-143v138l-43 43V211Zm43 24 0 80 69 61v-80l-69-61Zm158 142 64-57v104l-64 61v-108Z"/>
+  <path fill="url(#violet)" d="M122 500h28l18 45 18-45h28v72h-22v-42l-17 42h-15l-17-42v42h-21v-72Zm105 0h23v72h-23v-72Zm42 0h24l28 38v-38h23v72h-23l-29-39v39h-23v-72Zm94 0h22v26l25-26h28l-31 32 33 40h-29l-26-31v31h-22v-72Zm88 0h23v72h-23v-72Zm45 0h23v53h34v19h-57v-72Zm68 0h23v72h-23v-72Z"/>
+  <text x="384" y="630" fill="url(#violet)" font-family="Arial, sans-serif" font-size="45" font-weight="800" letter-spacing="9" text-anchor="middle">NUTRITRACK</text>
+</svg>
