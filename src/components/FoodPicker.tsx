@@ -1,13 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import catalogData from '../data/foodCatalog.json'
 
 type Food = { name: string; category: string; serving: string; grams: number; calories: number; source: string }
 const foodCatalog: Food[] = catalogData
 
-export default function FoodPicker() {
+export default function FoodPicker({ initialFoodName = '' }: { initialFoodName?: string }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Food | null>(null)
+  useEffect(() => {
+    const initialFood = foodCatalog.find(food => food.name === initialFoodName)
+    setSelected(initialFood || null)
+    setQuery(initialFood?.name || '')
+  }, [initialFoodName])
   const results = query.trim().length < 2 ? [] : foodCatalog.filter(food => `${food.name} ${food.category}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())).slice(0, 8)
 
   function choose(food: Food) {
