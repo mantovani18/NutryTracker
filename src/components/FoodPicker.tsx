@@ -16,6 +16,7 @@ export default function FoodPicker({ foods, initialFoods = [], onCreateFood }: {
   const [newName, setNewName] = useState('')
   const [newCalories, setNewCalories] = useState('')
   const [message, setMessage] = useState('')
+  const [saving, setSaving] = useState(false)
   useEffect(() => { setSelected(initialFoods) }, [initialFoods])
   const results = useMemo(() => {
     const search = normalize(query)
@@ -34,10 +35,12 @@ export default function FoodPicker({ foods, initialFoods = [], onCreateFood }: {
   function remove(name: string) { setSelected(items => items.filter(item => item.name !== name)) }
   async function createFood(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (saving) return
     const name = newName.replace(/\s+/g, ' ').trim()
     const calories = Number(newCalories)
     if (!name || !Number.isFinite(calories) || calories < 0) { setMessage('Informe nome e calorias válidos.'); return }
     try {
+      setSaving(true)
       await onCreateFood({ name, category: 'Meus alimentos', serving: '100 g', grams: 100, calories, source: 'Cadastrado pelo usuário' })
       setNewName('')
       setNewCalories('')
@@ -45,7 +48,16 @@ export default function FoodPicker({ foods, initialFoods = [], onCreateFood }: {
       setMessage('Alimento adicionado à sua lista.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Não foi possível cadastrar o alimento.')
+    } finally {
+      setSaving(false)
     }
+  }
+  function closeNewFood() {
+    if (saving) return
+    setNewFoodOpen(false)
+    setNewName('')
+    setNewCalories('')
+    setMessage('')
   }
   return <div className="food-picker">
     <label className="field">Alimento pesquisável
@@ -55,12 +67,12 @@ export default function FoodPicker({ foods, initialFoods = [], onCreateFood }: {
         {query && <button type="button" className="food-clear" onClick={() => setQuery('')} title="Limpar busca"><X size={14} /></button>}
       </div>
     </label>
-    <div className="form-grid">
+    <div className="food-picker-actions">
       <label className="field">Quantidade (g)<input type="number" min="0.1" step="0.1" value={amount} onChange={event => setAmount(event.target.value)} placeholder="Ex: 150" /></label>
-      <button type="button" className="secondary" onClick={() => setNewFoodOpen(value => !value)}><Plus size={15} /> Adicionar novo alimento</button>
+      <button type="button" className="secondary food-add-button" onClick={() => setNewFoodOpen(true)}><Plus size={15} /> Adicionar novo alimento</button>
     </div>
     {results.length > 0 && <div className="food-results">{results.map(food => <button type="button" className="food-result" key={`${food.id || food.name}-${food.category}`} onClick={() => choose(food)}><span><strong>{food.name}</strong><small>{food.category} · {food.calories} kcal/100 g</small></span><b>Adicionar</b></button>)}</div>}
-    {newFoodOpen && <form className="panel" onSubmit={createFood}><Field label="Nome do alimento" value={newName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewName(event.target.value)} required /><Field label="Calorias por 100 g (kcal)" type="number" min="0" step="0.1" value={newCalories} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewCalories(event.target.value)} required /><button className="primary" type="submit">Salvar alimento</button></form>}
+    {newFoodOpen && <div className="food-modal-backdrop" role="presentation" onMouseDown={closeNewFood}><form className="food-modal" onSubmit={createFood} onMouseDown={event => event.stopPropagation()}><div className="food-modal-heading"><div><span className="eyebrow">Novo item</span><h3>Adicionar alimento</h3></div><button type="button" className="icon-button" onClick={closeNewFood} disabled={saving} aria-label="Fechar"><X size={18} /></button></div><Field label="Nome do alimento" value={newName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewName(event.target.value)} placeholder="Ex: Granola caseira" required /><Field label="Calorias por 100 g (kcal)" type="number" min="0" step="0.1" value={newCalories} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setNewCalories(event.target.value)} placeholder="Ex: 420" required /><div className="food-modal-actions"><button className="secondary" type="button" onClick={closeNewFood} disabled={saving}>Cancelar</button><button className="primary" type="submit" disabled={saving}>{saving ? 'Salvando...' : 'Salvar alimento'}</button></div></form></div>}
     {selected.length > 0 && <div className="food-selected-list">{selected.map(item => <div className="food-selected" key={item.name}><span>{item.name} · {item.grams} g</span><b>{item.calories} kcal</b><button type="button" className="food-clear" onClick={() => remove(item.name)} title="Remover alimento"><X size={14} /></button></div>)}</div>}
     <input type="hidden" name="foods" value={JSON.stringify(selected)} required />
     {message && <p className="form-hint">{message}</p>}
