@@ -20,7 +20,8 @@ npm run preview
 
 1. Crie um projeto no Supabase.
 2. No SQL Editor, execute `supabase/migrations/001_initial.sql`.
-3. Copie `.env.example` para `.env` e preencha:
+3. Execute também `supabase/migrations/004_user_foods.sql` para habilitar o cadastro de alimentos personalizados.
+4. Copie `.env.example` para `.env` e preencha:
 
 ```env
 VITE_SUPABASE_URL=https://seu-projeto.supabase.co
