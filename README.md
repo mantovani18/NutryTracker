@@ -29,6 +29,8 @@ VITE_SUPABASE_PUBLISHABLE_KEY=sua-chave-publica
 
 A migration cria perfis, pesagens, refeições e atividades, índices, trigger de perfil e RLS por usuário. Nunca use `service_role` no frontend.
 
+Para permitir cadastro e login imediatamente, sem confirmação de e-mail, em **Supabase > Authentication > Providers > Email**, desative **Confirm email**. Essa é uma configuração do serviço de autenticação e não pode ser alterada pelo código do navegador. Com a opção desativada, o cadastro cria a sessão normalmente e o aplicativo não exige confirmação.
+
 ## Deploy na Vercel
 
 1. Suba o repositório para o GitHub.
